@@ -45,7 +45,7 @@ router.post('/summarize', async (req, res) => {
   }
 })
 
-router.post('/pdfUpload', (req, res) => {
+router.post('/pdfUpload', async (req, res) => {
   let pdfDocument = req.body.
 })
 
