@@ -1,12 +1,11 @@
 import './App.css'
+import UserInput from './Pages/UserInput'
 
 function App() {
   return (
-    <>
-      <div>
-        <h1>This is the StudyfAI Proof Of Concept</h1>
-      </div>
-    </>
+    <section className='bg-zinc-600 h-screen w-screen'>
+      <UserInput />
+    </section>
   )
 }
 
