@@ -46,7 +46,13 @@ router.post('/summarize', async (req, res) => {
 })
 
 router.post('/pdfUpload', async (req, res) => {
-  let pdfDocument = req.body.
+  let pdfDocument = req.body.pdfFile
+  try {
+    const data = pdfDocument
+    console.log(data)
+  } catch(error) {
+    console.error("Failed to retrieve pdf info", error);
+  }
 })
 
 
