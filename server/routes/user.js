@@ -23,7 +23,7 @@ router.post('/signup', async (req, res) => {
 })
 
 router.post('/summarize', async (req, res) => {
-  let userDocument = req.body.notes
+  const userDocument = req.body.notes;
   try {
     const modelResponse = await openai.chat.completions.create({
       model: 'gpt-4-turbo',
@@ -34,26 +34,29 @@ router.post('/summarize', async (req, res) => {
         },
         {
           role: "user",
-          content: userDocument
+          content: userDocument,
         }
       ]
     });
+    
     const aiResponse = JSON.parse(modelResponse.choices[0].message.content);
     res.json(aiResponse);
   } catch (error) {
-    console.error("error generating request");
+    console.error("Error generating response:", error);
+    res.status(500).send({ message: "Error generating summary", error });
   }
-})
+});
 
-router.post('/pdfUpload', async (req, res) => {
-  let pdfDocument = req.body.pdfFile
+router.post('/pdfUpload', (req, res) => {
   try {
-    const data = pdfDocument
-    console.log(data)
-  } catch(error) {
-    console.error("Failed to retrieve pdf info", error);
+    const pdfDocument = req.body.pdfContent;
+    console.log(pdfDocument);
+    res.send({ message: "PDF upload endpoint hit!" });
+  } catch (error) {
+    console.error("Failed to retrieve PDF info", error);
+    res.status(500).send({ message: "Failed to retrieve PDF info", error });
   }
-})
+});
 
 
 
