@@ -1,9 +1,21 @@
 import { useState } from "react";
-
+import pdfToText from 'react-pdftotext'
 
 const UserInput = () => {
   const [file, setFile] = useState(null);
+  const [pdfText, setPDFText] = useState(null);
 
+  const handlePDF = (e) => {
+    setFile(e.target.files[0]);
+  }
+
+  const handlePDFText = () => {
+    pdfToText(file)
+      .then(text => setPDFText(text))
+      .catch(error => console.error("Failed to extract text from PDF", error))
+  }
+
+  
 
   console.log(file)
   return (
@@ -12,15 +24,17 @@ const UserInput = () => {
         <div className="label">
           <span className="label-text">Upload a PDF document of your notes</span>
         </div>
-        <input onChange={(e) => this.set({selectedFile: e.target.files[0]})}
+        <input onChange={handlePDF}
           type="file"
+          accept="application/pdf"
           className="file-input file-input-bordered w-full max-w-xs"
+          name="pdfFile"
         />
         <div className="label">
           <span className="label-text-alt">PDFs only for now...</span>
         </div>
       </label>
-      <button className="btn">
+      <button className="btn" onClick={handlePDFText}>
         <h1>Summarize Notes</h1>
       </button>
     </section>
