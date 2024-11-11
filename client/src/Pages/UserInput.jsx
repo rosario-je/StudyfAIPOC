@@ -1,23 +1,38 @@
 import { useState } from "react";
 import pdfToText from 'react-pdftotext'
+import axios from 'axios'
 
 const UserInput = () => {
   const [file, setFile] = useState(null);
   const [pdfText, setPDFText] = useState(null);
 
+  //step 1 - get the user file
   const handlePDF = (e) => {
     setFile(e.target.files[0]);
   }
 
-  const handlePDFText = () => {
-    pdfToText(file)
-      .then(text => setPDFText(text))
-      .catch(error => console.error("Failed to extract text from PDF", error))
-  }
-
+  //Step 2 - handle Summarize Notes button
+  const handlePDFText = async () => {
+    try {
+      const text = await pdfToText(file); 
+      console.log(text); 
+      setPDFText(text);
+      await handlePDFUpload(text); 
+    } catch (error) {
+      console.error("Failed to extract text from PDF", error);
+    }
+  };
   
+  //Step 3 - send the text to the server
+  const handlePDFUpload = async (text) => {
+    try {
+      const response = await axios.post('/api/pdfUpload', { pdfContent: text });
+      console.log(response.data);
+    } catch (error) {
+      console.error("Failed to upload PDF", error);
+    }
+  };
 
-  console.log(file)
   return (
     <section>
       <label className="form-control w-full max-w-xs">
