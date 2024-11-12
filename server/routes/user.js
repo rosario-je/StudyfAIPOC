@@ -23,7 +23,7 @@ router.post('/signup', async (req, res) => {
 })
 
 router.post('/summarize', async (req, res) => {
-  const userDocument = req.body.notes;
+  const pdfDocument = req.body.pdfContent;
   try {
     const modelResponse = await openai.chat.completions.create({
       model: 'gpt-4-turbo',
@@ -34,12 +34,24 @@ router.post('/summarize', async (req, res) => {
         },
         {
           role: "user",
-          content: userDocument,
+          content: pdfDocument,
         }
       ]
     });
-    
-    const aiResponse = JSON.parse(modelResponse.choices[0].message.content);
+    let aiResponseContent = modelResponse.choices[0].message.content;
+    console.log("Raw AI Response Content:", aiResponseContent);
+
+    // Remove code block markers if they exist
+    aiResponseContent = aiResponseContent.replace(/```json|```/g, '').trim();
+
+    let aiResponse;
+    try {
+      aiResponse = JSON.parse(aiResponseContent);
+    } catch (parseError) {
+      console.error("Failed to parse AI response:", parseError);
+      return res.status(500).send({ message: "Error parsing AI response" });
+    }
+
     res.json(aiResponse);
   } catch (error) {
     console.error("Error generating response:", error);
